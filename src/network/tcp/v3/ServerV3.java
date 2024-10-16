@@ -19,9 +19,9 @@ public class ServerV3 {
             Socket socket = serverSocket.accept();
             log("소켓 연결: " + socket);
 
-            SessionV3 session = new SessionV3(socket);
-            Thread thread = new Thread(session);
-            thread.start();
+//            SessionV3 session = new SessionV3(socket);
+//            Thread thread = new Thread(session);
+//            thread.start();
         }
 
     }
