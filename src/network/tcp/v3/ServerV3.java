@@ -19,6 +19,11 @@ public class ServerV3 {
             Socket socket = serverSocket.accept();
             log("소켓 연결: " + socket);
 
+            DataInputStream input = new DataInputStream(socket.getInputStream());
+            String received = input.readUTF();
+
+            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+            output.writeUTF(received + " 서버로 데이터 받음");
 //            SessionV3 session = new SessionV3(socket);
 //            Thread thread = new Thread(session);
 //            thread.start();

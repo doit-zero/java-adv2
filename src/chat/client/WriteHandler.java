@@ -8,13 +8,16 @@ import java.util.Scanner;
 
 // 서버에 데이터 쓰는 담당
 public class WriteHandler implements Runnable{
-    private Client client;
+    private final Client client;
+
+    public WriteHandler(Client client) {
+        this.client = client;
+    }
 
     @Override
     public void run() {
         try {
             Scanner scanner = new Scanner(System.in);
-            System.out.print("이름을 입력하세요: ");
             String name = "";
             do{
                 System.out.print("이름을 입력하세요: ");

@@ -13,25 +13,21 @@ public class ReadHandler implements Runnable{
 
     private final Client client;
 
-    public ReadHandler(DataInputStream input, Client client) {
-
+    public ReadHandler(Client client) {
         this.client = client;
     }
 
-//    public ReadHandler(DataInputStream input) {
-//        this.input = input;
-//    }
     @Override
     public void run() {
-//        try{
-//            while (true){
-//                String received = input.readUTF();
-//                System.out.println(received);
-//            }
-//        } catch (IOException e) {
-//            log(e);
-//        }finally {
-//            client.close();
-//        }
+        try{
+            while (true){
+                String received = client.getInput().readUTF();
+                System.out.println(received);
+            }
+        } catch (IOException e) {
+            log(e);
+        }finally {
+            client.close();
+        }
     }
 }

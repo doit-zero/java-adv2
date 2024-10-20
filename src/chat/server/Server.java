@@ -1,7 +1,7 @@
-package chat;
+package chat.server;
 
-import util.MyLogger;
-
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,9 +26,16 @@ public class Server {
                 Socket socket = serverSocket.accept(); // 블로킹
 
                 log("소켓 연결: " + socket);
-                Session session = new Session(socket, sessionManager);
-                Thread thread = new Thread(session);
-                thread.start();
+
+                DataInputStream input = new DataInputStream(socket.getInputStream());
+                String receivedData = input.readUTF();
+
+                DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+                output.writeUTF("서버를 거친 데이터 " + receivedData);
+
+//                Session session = new Session(socket, sessionManager);
+//                Thread thread = new Thread(session);
+//                thread.start();
             }
         } catch (IOException e) {
             log("서버 소캣 종료: " + e);

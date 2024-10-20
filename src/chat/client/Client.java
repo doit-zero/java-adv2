@@ -26,6 +26,16 @@ public class Client {
         this.output = new DataOutputStream(socket.getOutputStream());
     }
 
+    public void start(){
+        WriteHandler writeHandler = new WriteHandler(this);
+        ReadHandler readHandler = new ReadHandler(this);
+        Thread writeThread = new Thread(writeHandler);
+        Thread readThread = new Thread(readHandler);
+
+        writeThread.start();
+        readThread.start();
+    }
+
     public void close(){
         if(closed){
             return;
@@ -33,6 +43,10 @@ public class Client {
         closed = true;
         SocketCloseUtil.closeAll(socket,input,output);
 
+    }
+
+    public DataInputStream getInput() {
+        return input;
     }
 
     public DataOutputStream getOutput() {

@@ -1,7 +1,4 @@
-package chat;
-
-import util.MyLogger;
-import util.SocketCloseUtil;
+package chat.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -36,7 +33,7 @@ public class Session implements Runnable {
                 String received = input.readUTF();
                 log("클라이언트로부터 받은 데이터: " + received);
 
-                if (userName.isEmpty()) {
+                if (received.startsWith("/join")) {
                     userName = received;
                     log("초기 이름 저장 세션 이름 " + userName + " 이 저장됨 ");
                 } else if (received.contains("message")) {
