@@ -6,6 +6,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
+import static util.MyLogger.log;
+
 // 서버에 데이터 쓰는 담당
 public class WriteHandler implements Runnable{
     private final Client client;
@@ -26,12 +28,12 @@ public class WriteHandler implements Runnable{
 
             // client 객체에게 서버 소켓과 연결된 DataOutStream을 요청한다.
             DataOutputStream output = client.getOutput();
-            output.writeUTF(name);
+            output.writeUTF("/join" + name);
 
             while (true){
                 System.out.print("입력하세요: ");
                 String received = scanner.nextLine();
-
+                output.writeUTF("/message" + received);
                 if(received.equals("exit")){
                     client.close();
                     break;
@@ -39,9 +41,8 @@ public class WriteHandler implements Runnable{
 
             }
 
-
         } catch (IOException e){
-            MyLogger.log(e);
+            log(e);
         } finally {
             client.close();
         }

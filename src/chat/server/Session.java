@@ -9,6 +9,16 @@ import java.util.List;
 import static util.MyLogger.log;
 import static util.SocketCloseUtil.closeAll;
 
+
+/**
+* Session 객체의 책임과 SessionManager와의 협력
+ * == 책임 ==
+ * 1. 클라이언트와 socket으로 연결되고 stream으로 데이터를 주고 받는다.
+ * 2. 서버 종료 또는 클라이언트와 소켓 연결 종료시 socket,input,output 자원을 정리한다.
+ * == 협력 ==
+ * 1. 클라이언트로부터 받은 데이터를 sessionManager 보내어 다른 세션들에게도 데이터를 전달하도록 한다.
+ *
+* */
 public class Session implements Runnable {
     private final Socket socket;
     private final DataInputStream input;
@@ -31,19 +41,13 @@ public class Session implements Runnable {
 
             while (true) {
                 String received = input.readUTF();
-                log("클라이언트로부터 받은 데이터: " + received);
-
-                if (received.startsWith("/join")) {
-                    userName = received;
-                    log("초기 이름 저장 세션 이름 " + userName + " 이 저장됨 ");
-                } else if (received.contains("message")) {
-                    System.out.println("서버에 메시지 전달받음");
-                    sessionManager.sendMessages(received.replace("message", "").trim());
-                } else if (received.contains("change")) {
-                    userName = received.replace("change","").trim();
-                } else if (received.contains("users")) {
-                    findAll();
-                } else if (received.equals("exit")) {
+                if (received.contains("/join")) {
+                    userName = received.replace("/join","").trim();
+                    sessionManager.sendMessages(userName + "님이 입장하셨습니다.");
+                } else if (received.contains("/message")) {
+                    String message = received.replace("/message", "").trim();
+                    sessionManager.sendMessages(message);
+                } else if (received.contains("/exit")) {
                     break;
                 }
             }
@@ -59,19 +63,12 @@ public class Session implements Runnable {
     }
 
 
-    // 세션에 데이터 보내기
+    // 클라이언트와 연결된 소켓에 데이터 보낸다.
     public synchronized void sendMessage(String message) throws IOException {
-        log("각 세션들에게 메시지가 전달됨");
-        output.writeUTF(userName + " " + message);
+        output.writeUTF(message);
     }
 
-    private void findAll() throws IOException {
-        List<String> userNameList = sessionManager.findAll();
-        output.writeUTF(String.valueOf(userNameList));
-    }
-
-    //세션 종료시,서버 종료시 동시에 호출될 수 있다.
-    public synchronized void close() {
+    public void close() {
         if (closed) {
             return;
         }

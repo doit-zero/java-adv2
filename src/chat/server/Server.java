@@ -27,15 +27,10 @@ public class Server {
 
                 log("소켓 연결: " + socket);
 
-                DataInputStream input = new DataInputStream(socket.getInputStream());
-                String receivedData = input.readUTF();
-
-                DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-                output.writeUTF("서버를 거친 데이터 " + receivedData);
-
-//                Session session = new Session(socket, sessionManager);
-//                Thread thread = new Thread(session);
-//                thread.start();
+                // 서버 소켓을 스레드로 만든 이유는 클라이언트 소켓마다 서버 소켓이 따로 생성되어 연결되고 작동하기 때문이다.    
+                Session session = new Session(socket, sessionManager);
+                Thread thread = new Thread(session);
+                thread.start();
             }
         } catch (IOException e) {
             log("서버 소캣 종료: " + e);
