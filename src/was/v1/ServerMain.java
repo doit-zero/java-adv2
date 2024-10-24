@@ -1,4 +1,4 @@
-package was;
+package was.v1;
 
 import java.io.IOException;
 
