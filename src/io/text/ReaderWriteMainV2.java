@@ -13,7 +13,6 @@ public class ReaderWriteMainV2 {
 
         // 파일에 쓰기
         FileOutputStream fos = new FileOutputStream(FILE_NAME);
-
         // byte 배열로 바꿔주는 역할을 함
         OutputStreamWriter osw = new OutputStreamWriter(fos, UTF_8);
         osw.write(writeString);
@@ -22,7 +21,6 @@ public class ReaderWriteMainV2 {
         // 파일에서 읽기
         FileInputStream fis = new FileInputStream(FILE_NAME);
         InputStreamReader isr = new InputStreamReader(fis, UTF_8);
-
         StringBuilder content = new StringBuilder();
         int ch;
         while ((ch = isr.read()) != -1){

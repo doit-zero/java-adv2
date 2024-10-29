@@ -20,10 +20,10 @@ public class ReaderWriterMainV4 {
         bw.close();
 
         // 파일에서 읽기
-        StringBuilder content = new StringBuilder();
         FileReader fr = new FileReader(FILE_NAME, UTF_8);
         BufferedReader br = new BufferedReader(fr, BUFFER_SIZE);
 
+        StringBuilder content = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null){
             content.append(line).append("\n");
