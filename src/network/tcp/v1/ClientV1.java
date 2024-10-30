@@ -17,10 +17,13 @@ public class ClientV1 {
 
         log("소캣 연결: " + socket);
         // 서버에게 문자 보내기
-        String toSend = "Hello"; output.writeUTF(toSend); log("client -> server: " + toSend);
+        String toSend = "Hello";
+        output.writeUTF(toSend);
+        log("client -> server: " + toSend);
 
         // 서버로부터 문자 받기
-        String received = input.readUTF(); log("client <- server: " + received);
+        String received = input.readUTF();
+        log("client <- server: " + received);
 
         // 자원 정리
         log("연결 종료: " + socket);

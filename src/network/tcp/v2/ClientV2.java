@@ -21,7 +21,7 @@ public class ClientV2 {
         Scanner scanner = new Scanner(System.in);
         while (true){
             System.out.print("전송 문자: ");
-            String toSend = scanner.nextLine();
+            String toSend = scanner.nextLine();// 블로킹 상태임
 
             // 서버에게 문자 보내기
             output.writeUTF(toSend);

@@ -1,14 +1,14 @@
-package network.tcp.v3;
+package network.tcp.v4;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import network.tcp.v3.SessionV3;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import static util.MyLogger.log;
 
-public class ServerV3 {
+public class ServerV4 {
     private static final int PORT = 12345;
     public static void main(String[] args) throws IOException, InterruptedException {
         log("서버 시작");
@@ -18,8 +18,8 @@ public class ServerV3 {
         while (true){
             Socket socket = serverSocket.accept();
             log("소켓 연결: " + socket);
-            SessionV3 sessionV3 = new SessionV3(socket);
-            Thread thread = new Thread(sessionV3);
+            SessionV4 session = new SessionV4(socket);
+            Thread thread = new Thread(session);
             thread.start();
         }
 
