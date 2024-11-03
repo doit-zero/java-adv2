@@ -38,7 +38,7 @@ public class HttpServerHandlerV4 implements Runnable {
 
             HttpRequest request = new HttpRequest(reader);
             HttpResponse response = new HttpResponse(writer);
-            
+
             log("HTTP 요청 정보 출력");
 
             if (request.getPath().equals("/site1")) {
@@ -52,20 +52,10 @@ public class HttpServerHandlerV4 implements Runnable {
             } else {
                 notFound(response);
             }
+
+            response.flush();
             log("HTTP 응답 전달 완료");
         }
-    }
-
-    private String requestToString(BufferedReader reader) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (line.isEmpty()) {
-                break;
-            }
-            sb.append(line).append("\n");
-        }
-        return sb.toString();
     }
 
     private static void home(HttpResponse response) {

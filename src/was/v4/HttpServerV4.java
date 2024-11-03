@@ -25,7 +25,7 @@ public class HttpServerV4 {
 
             while (true){
                 Socket socket = serverSocket.accept();
-                es.submit(new HttpServerHandlerV3(socket));
+                es.submit(new HttpServerHandlerV4(socket));
             }
         } catch (IOException e){
             log(e);
