@@ -1,5 +1,7 @@
 package was.httpserver;
 
+import util.MyLogger;
+
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.*;
+import static util.MyLogger.log;
 
 /** HttpRequest 클래스를 만드는 이유
  * 브라우저가 보낸 httpMessage는 같은 구조를 갖고 있다.
@@ -36,12 +39,12 @@ public class HttpRequest {
 
         // 2.header 파싱
         parseHeaders(reader);
+
         // 3.message body 파싱
     }
 
     private void parseRequestLine(BufferedReader reader) throws IOException {
         String requestLine = reader.readLine();
-
         if(requestLine == null){
             throw new IOException("EOF: No request line received");
         }
@@ -92,6 +95,10 @@ public class HttpRequest {
 
     public String getHeader(String name) {
         return headers.get(name);
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 
     @Override

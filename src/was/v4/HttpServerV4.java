@@ -1,5 +1,7 @@
 package was.v4;
 
+//import was.httpserver.HttpSessionManager;
+import was.httpserver.HttpSessionManager;
 import was.v3.HttpServerHandlerV3;
 
 import java.io.IOException;
@@ -22,10 +24,12 @@ public class HttpServerV4 {
         try {
             log("서버 소켓 port : " + PORT);
             ServerSocket serverSocket = new ServerSocket(PORT);
+            HttpSessionManager sessionManager = new HttpSessionManager();
 
             while (true){
                 Socket socket = serverSocket.accept();
-                es.submit(new HttpServerHandlerV4(socket));
+                es.submit(new HttpServerHandlerV4(socket,sessionManager));
+                //es.submit(new HttpServerHandlerV4(socket));
             }
         } catch (IOException e){
             log(e);

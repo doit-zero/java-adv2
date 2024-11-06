@@ -2,11 +2,16 @@ package was.v4;
 
 import was.httpserver.HttpRequest;
 import was.httpserver.HttpResponse;
+import was.httpserver.HttpSession;
+import was.httpserver.HttpSessionManager;
+//import was.httpserver.HttpSession;
+//import was.httpserver.HttpSessionManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.HttpCookie;
 import java.net.Socket;
 import java.net.URLDecoder;
 
@@ -16,8 +21,15 @@ import static util.MyLogger.log;
 public class HttpServerHandlerV4 implements Runnable {
     private final Socket socket;
 
-    public HttpServerHandlerV4(Socket socket) {
+
+//    public HttpServerHandlerV4(Socket socket){
+//        this.socket = socket;
+//    }
+   private final HttpSessionManager sessionManager;
+
+    public HttpServerHandlerV4(Socket socket,HttpSessionManager sessionManager) {
         this.socket = socket;
+        this.sessionManager = sessionManager;
     }
 
     @Override
@@ -25,7 +37,7 @@ public class HttpServerHandlerV4 implements Runnable {
         try {
             process();
         } catch (IOException e) {
-            log(e);
+            log("스레드에서 예외 상황 발생 : " + e);
         }
     }
 
@@ -35,17 +47,36 @@ public class HttpServerHandlerV4 implements Runnable {
              PrintWriter writer = new PrintWriter(socket.getOutputStream(), false, UTF_8)) {
 
             // 매 요청마다 httpRequest & httpResponse 객체가 생성되어야함
-
             HttpRequest request = new HttpRequest(reader);
             HttpResponse response = new HttpResponse(writer);
 
-            log("HTTP 요청 정보 출력");
+            if (request.getPath().equals("/favicon.ico")) {
+                log("favicon 요청");
+                return;
+            }
+
+            log("headers : " + request.getHeaders());
+
+            // 매 요청마다 httpSession 확인
+            String[] splitedCookies = request.getHeader("Cookie").split(" ");
+            String sessionId = splitedCookies[0];
+            String[] split = sessionId.split("=");
+            String realSessionId = split[1];
+
+            log("realSessionId : " + realSessionId);
+
+            HttpSession session = sessionManager.getSession(realSessionId);
+
+            HttpCookie cookie = new HttpCookie("SESSIONID",session.getSessionId());
+            cookie.setHttpOnly(true);
+            response.setCookie(cookie);
+
 
             if (request.getPath().equals("/site1")) {
                 site1(response);
             } else if (request.getPath().equals("/site2")) {
                 site2(response);
-            } else if (request.getPath().equals("/searc")) {
+            } else if (request.getPath().equals("/search")) {
                 search(request, response);
             } else if (request.getPath().equals("/")) {
                 home(response);

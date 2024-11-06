@@ -1,12 +1,15 @@
 package was.httpserver;
 
 import java.io.PrintWriter;
+import java.net.HttpCookie;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HttpResponse {
     private final PrintWriter writer;
     private int statusCode = 200;
+
+    private HttpCookie cookie;
     private final StringBuilder bodyBuilder = new StringBuilder();
     private String contentType = "text/html; charset=UTF-8";
 
@@ -15,6 +18,10 @@ public class HttpResponse {
     }
     public void setStatus(int statusCode) {
         this.statusCode = statusCode;
+    }
+
+    public void setCookie(HttpCookie cookie) {
+        this.cookie = cookie;
     }
 
     public void setContentType(String contentType) {
@@ -31,6 +38,7 @@ public class HttpResponse {
         writer.println("HTTP/1.1 " + statusCode + " " + getReasonPhrase(statusCode));
         writer.println("Content-Type: " + contentType);
         writer.println("Content-Length: " + contentLength);
+        writer.println("Set-Cookie: " + cookie.toString());
         writer.println();
         writer.println(bodyBuilder);
         writer.flush();
