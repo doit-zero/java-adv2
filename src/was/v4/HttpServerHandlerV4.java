@@ -57,7 +57,6 @@ public class HttpServerHandlerV4 implements Runnable {
 
             // 세션 확인 후 세션 생성
             HttpSession session = getHttpSession(request);
-
             // 쿠키에 세션Id 생성
             setSessionInCookie(response, session);
 
