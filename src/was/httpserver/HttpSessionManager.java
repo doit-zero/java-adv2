@@ -11,7 +11,7 @@ import static util.MyLogger.log;
 public class HttpSessionManager {
 
     private Map<String, HttpSession> sessions = new ConcurrentHashMap<>();
-    private long sessionTimeout = 30 * 60 * 1000;
+    private long sessionTimeout = 30 * 60 * 10;
 
     public HttpSession createSession() {
         String sessionId = UUID.randomUUID().toString();
@@ -23,10 +23,19 @@ public class HttpSessionManager {
     }
 
     public HttpSession getSession(String sessionId) {
-        if(sessions.containsKey(sessionId)){
+        // sessions에 session이 있는지 확인
+        if(!sessions.containsKey(sessionId)){
+            return createSession();
+        }
+
+        // 만료 확인
+        if(!isExpired(sessions.get(sessionId))){
             return sessions.get(sessionId);
         }
+
+        invalidateSession(sessionId);
         return createSession();
+
     }
 
     public void invalidateSession(String sessionId) {
@@ -34,6 +43,10 @@ public class HttpSessionManager {
     }
     private boolean isExpired(HttpSession session) {
         return System.currentTimeMillis() - session.getCreationTime() > sessionTimeout;
+    }
+
+    public Map<String, HttpSession> getSessions() {
+        return sessions;
     }
 
 
