@@ -48,10 +48,7 @@ public class HttpServerHandler implements Runnable {
                 return;
             }
 
-            // 세션 확인 후 세션 생성
-            HttpSession session = getHttpSession(request);
-            // 쿠키에 세션Id 생성
-            setSessionInCookie(response, session);
+            createCookie(request,response);
 
             servletManager.execute(request,response);
             response.flush();
@@ -59,21 +56,26 @@ public class HttpServerHandler implements Runnable {
         }
     }
 
-    private static void setSessionInCookie(HttpResponse response, HttpSession session) {
+
+    private void createCookie(HttpRequest request, HttpResponse response) {
+        HttpSession session = null;
+        if (request.getHeaders().containsKey("Cookie")){
+            String[] splitedCookies = request.getHeader("Cookie").split(" ");
+            String sessionId = splitedCookies[0];
+            String[] split = sessionId.split("=");
+            String realSessionId = split[1].replace("\"", "").replace(";", "");
+
+            session = sessionManager.getSession(realSessionId);
+            HttpCookie cookie = new HttpCookie("SESSIONID", session.getSessionId());
+            cookie.setHttpOnly(true);
+            response.setCookie(cookie);
+            return;
+        }
+
+        session = sessionManager.createSession();
         HttpCookie cookie = new HttpCookie("SESSIONID", session.getSessionId());
         cookie.setHttpOnly(true);
         response.setCookie(cookie);
-    }
-
-    private HttpSession getHttpSession(HttpRequest request) {
-        // 매 요청마다 httpSession 확인
-        String[] splitedCookies = request.getHeader("Cookie").split(" ");
-        String sessionId = splitedCookies[0];
-        String[] split = sessionId.split("=");
-        String realSessionId = split[1].replace("\"", "").replace(";", "");
-
-        HttpSession session = sessionManager.getSession(realSessionId);
-        return session;
     }
 
 }

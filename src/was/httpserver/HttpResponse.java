@@ -16,6 +16,7 @@ public class HttpResponse {
     public HttpResponse(PrintWriter writer) {
         this.writer = writer;
     }
+
     public void setStatus(int statusCode) {
         this.statusCode = statusCode;
     }
@@ -28,7 +29,7 @@ public class HttpResponse {
         this.contentType = contentType;
     }
 
-    public void writeBody(String body) {
+    public void writeBody(String body){
         bodyBuilder.append(body);
     }
 
@@ -54,5 +55,6 @@ public class HttpResponse {
                 return "Internal Server Error";
             default:
                 return "Unknown Status";
-        } }
+        }
+    }
 }

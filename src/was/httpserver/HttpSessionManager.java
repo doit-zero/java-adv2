@@ -10,31 +10,36 @@ import static util.MyLogger.log;
 
 public class HttpSessionManager {
 
-    private Map<String, HttpSession> sessions = new ConcurrentHashMap<>();
-    private long sessionTimeout = 30 * 60 * 10;
+    private final Map<String, HttpSession> sessions;
+    private final long sessionTimeout;
+    public HttpSessionManager() {
+        sessions = new ConcurrentHashMap<>();
+        sessionTimeout = 5 * 60 * 1000;
+    }
 
     public HttpSession createSession() {
         String sessionId = UUID.randomUUID().toString();
         HttpSession session = new HttpSession(sessionId);
 
-        log("createdSession : " + session);
         sessions.put(sessionId, session);
         return session;
     }
 
     public HttpSession getSession(String sessionId) {
         // sessions에 session이 있는지 확인
-        if(!sessions.containsKey(sessionId)){
-            return createSession();
+        HttpSession session = sessions.get(sessionId);
+        if (session == null) {
+            log("세션 새로 새성2");
+            return createSession(); // 세션이 없으면 새로 생성
         }
 
         // 만료 확인
-        if(!isExpired(sessions.get(sessionId))){
-            return sessions.get(sessionId);
+        if (isExpired(session)) {
+            invalidateSession(sessionId);
+            return createSession(); // 만료된 세션이면 새로 생성
         }
 
-        invalidateSession(sessionId);
-        return createSession();
+        return session; // 기존 세션 반환
 
     }
 
