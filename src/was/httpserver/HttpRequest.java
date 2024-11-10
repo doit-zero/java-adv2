@@ -41,6 +41,7 @@ public class HttpRequest {
         parseHeaders(reader);
 
         // 3.message body 파싱
+        parseBody(reader);
     }
 
     private void parseRequestLine(BufferedReader reader) throws IOException {
@@ -78,6 +79,26 @@ public class HttpRequest {
             String[] headerParts = line.split(":");
             // trim() 앞 뒤에 공백 제거
             headers.put(headerParts[0].trim(), headerParts[1].trim());
+        }
+    }
+
+    private void parseBody(BufferedReader reader) throws IOException {
+        // Content-Length 가 없으면 바로 리턴
+        if (!headers.containsKey("Content-Length")) {
+            return;
+        }
+        int contentLength = Integer.parseInt(headers.get("Content-Length"));
+        char[] bodyChars = new char[contentLength];
+        int read = reader.read(bodyChars);
+        if (read != contentLength) {
+            throw new IOException("Failed to read entire body. Expected " +
+                    contentLength + " bytes, but read " + read);
+        }
+        String body = new String(bodyChars);
+        log("HTTP Message Body: " + body);
+        String contentType = headers.get("Content-Type");
+        if ("application/x-www-form-urlencoded".equals(contentType)) {
+            parseQueryParameters(body);
         }
     }
 

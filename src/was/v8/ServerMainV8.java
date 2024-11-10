@@ -6,6 +6,7 @@ import was.httpserver.ServletManager;
 import was.httpserver.servlet.DiscardServlet;
 import was.httpserver.servlet.annotation.AnnotationServletV1;
 import was.httpserver.servlet.annotation.AnnotationServletV2;
+import was.httpserver.servlet.annotation.AnnotationServletV3;
 import was.v7.SearchControllerV7;
 import was.v7.SiteControllerV7;
 
@@ -17,7 +18,7 @@ public class ServerMainV8 {
     public static void main(String[] args) throws IOException {
         List<Object> controllers = List.of(new SearchControllerV8(),new SiteControllerV8());
 
-        AnnotationServletV2 annotationServlet = new AnnotationServletV2(controllers);
+        AnnotationServletV3 annotationServlet = new AnnotationServletV3(controllers);
 
         HttpSessionManager httpSessionManager = new HttpSessionManager();
 

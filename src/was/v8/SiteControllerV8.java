@@ -25,4 +25,9 @@ public class SiteControllerV8 {
     public void site2(HttpResponse response){
         response.writeBody("<h1>site2</h1>");
     }
+
+//    @Mapping("/site2")
+//    public void site3(HttpResponse response){
+//        response.writeBody("<h1>site2</h1>");
+//    }
 }
